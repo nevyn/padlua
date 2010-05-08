@@ -18,7 +18,7 @@ static padluaAppDelegate *singleton = NULL;
 
 void printfunc(lua_State *L, const char *output)
 {
-	[singleton output:output];
+	[singleton output:[NSString stringWithUTF8String:output]];
 }
 
 @implementation padluaAppDelegate
@@ -81,6 +81,7 @@ void printfunc(lua_State *L, const char *output)
 	L = lua_open();
 	G(L)->printfunc = printfunc;
 	luaL_openlibs(L);
+	luaL_dofile(L, [[[NSBundle mainBundle] pathForResource:@"repr" ofType:@"lua"] UTF8String]);
 	
 	return YES;
 }
@@ -97,7 +98,32 @@ void printfunc(lua_State *L, const char *output)
 		[commandHistory removeLastObject];
 	commandIndex = -1;
 	
-	luaL_dostring(L, in.text.UTF8String);
+	int stacktop = lua_gettop(L);
+	
+	luaL_loadstring(L, [in.text UTF8String]);
+
+	if(lua_pcall(L, 0, LUA_MULTRET, 0) != 0)
+		[self output:@"ERROR"];
+		
+	BOOL outputNumbers = lua_gettop(L)-stacktop > 1;
+	
+	for(int i = 0; lua_gettop(L) != stacktop; i++) {
+		if(outputNumbers)
+			[self output:[NSString stringWithFormat:@"%d: ", i]];
+		else
+			[self output:@": "];
+		
+		size_t l;
+		const char *c = lua_tolstring(L, -1, &l);
+		if(c) {
+			NSString *n = [[[NSString alloc] initWithBytes:c length:l encoding:NSUTF8StringEncoding] autorelease];
+			[self output:n];
+			[self output:@"\n"];
+		}
+		
+		lua_pop(L, 1);
+	}
+		
 	
 	in.text = @"";
 }
@@ -128,10 +154,9 @@ void printfunc(lua_State *L, const char *output)
 	}		
 }
 
--(void)output:(const char *)output;
+-(void)output:(NSString *)output;
 {
-	NSString *s = [NSString stringWithUTF8String:output];
-	out.text = [out.text stringByAppendingString:s];
+	out.text = [out.text stringByAppendingString:output];
 }
 
 @end

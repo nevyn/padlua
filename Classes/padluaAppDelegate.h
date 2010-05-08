@@ -26,6 +26,6 @@
 -(IBAction)olderCommand:(id)sender;
 -(IBAction)newerCommand:(id)sender;
 
--(void)output:(const char*)output;
+-(void)output:(NSString*)output;
 @end
 
