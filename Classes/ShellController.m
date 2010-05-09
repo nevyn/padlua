@@ -157,7 +157,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	
 	[self output:@"Ready.\n"];
 	
-	[out scrollRangeToVisible:NSMakeRange(out.text.length, 0)];
+	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 	
 	[in becomeFirstResponder];	
 }
@@ -362,7 +362,7 @@ static const int kMaxLinesOfScrollback = 100;
 		newOut = [newLines componentsJoinedByString:@"\n"];
 	}
 	out.text = newOut;
-	[out scrollRangeToVisible:NSMakeRange(out.text.length, 0)];
+	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 }
 
 -(IBAction)showSettings:(UIButton*)sender;
