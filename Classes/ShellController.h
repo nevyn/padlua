@@ -7,13 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SettingsController.h"
 #import "lua.h"
 #import "lauxlib.h"
 #import "lualib.h"
 #import "lstate.h"
 
 
-@interface ShellController : UIViewController {
+@interface ShellController : UIViewController 
+<UIPopoverControllerDelegate>
+{
 	IBOutlet UIView *container;
 	IBOutlet UITextView *out;
 	IBOutlet UITextView *in;
@@ -21,12 +24,14 @@
 	NSMutableArray *commandHistory;
 	int commandIndex;
 	NSString *savedCommand;
+	
+	IBOutlet SettingsController *settings;
 }
 -(IBAction)insertCharacter:(UIButton*)sender;
 -(IBAction)runCurrent:(UIButton*)sender;
 -(IBAction)olderCommand:(id)sender;
 -(IBAction)newerCommand:(id)sender;
+-(IBAction)showSettings:(UIButton*)sender;
 
 -(void)output:(NSString*)output;
--(void)save;
 @end

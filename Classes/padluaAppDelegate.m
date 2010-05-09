@@ -16,6 +16,7 @@
 		[NSArray array], @"commandHistory",
 		@"", @"inHistory",
 		@"", @"outHistory",
+		[NSArray array], @"functionsToSave",
 		nil
 	]];
 }

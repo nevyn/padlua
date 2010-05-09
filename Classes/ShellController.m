@@ -10,6 +10,11 @@
 
 @interface ShellController ()
 @property (retain) NSString *savedCommand;
+-(void)load;
+-(void)save;
+
+-(void)dumpStackIndex:(int)idx repr:(BOOL)repr;
+-(void)dumpStackDownTo:(int)downTo repr:(BOOL)repr prefix:(NSString*)prefix;
 @end
 
 static ShellController *singleton = NULL;
@@ -17,6 +22,30 @@ static ShellController *singleton = NULL;
 void printfunc(lua_State *L, const char *output)
 {
 	[singleton output:[NSString stringWithUTF8String:output]];
+}
+
+int LuaNSDataWriter(lua_State *L, const void* p, size_t sz, void* ud)
+{
+	NSMutableData *d = (NSMutableData*)ud;
+	[d appendBytes:p length:sz];
+	return 0;
+}
+
+struct DataReaderTemp {
+	NSData *d;
+	BOOL done;
+};
+const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
+{
+	struct DataReaderTemp *d = (struct DataReaderTemp *)ud;
+	if(!d->done) {
+		d->done = YES;
+		*sz = [d->d length];
+		return [d->d bytes];
+	} else {
+		*sz = 0;
+		return NULL;
+	}
 }
 
 
@@ -30,7 +59,7 @@ void printfunc(lua_State *L, const char *output)
 -(UIView*)keyboardAccessory;
 {
 	NSArray *row1 = [NSArray arrayWithObjects:
-		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @":", @"Run", nil
+		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @"⌘", @"Run", nil
 	];
 	NSArray *row2 = [NSArray arrayWithObjects:
 		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", @"{", @"}", @";", @"_", nil
@@ -57,12 +86,14 @@ void printfunc(lua_State *L, const char *output)
 			else if([title isEqual:@"↑"])
 				[button addTarget:self action:@selector(olderCommand:) forControlEvents:UIControlEventTouchUpInside];
 			else if([title isEqual:@"↓"])
-				[button addTarget:self action:@selector(newerCommand:) forControlEvents:UIControlEventTouchUpInside];			
+				[button addTarget:self action:@selector(newerCommand:) forControlEvents:UIControlEventTouchUpInside];
+			else if([title isEqual:@"⌘"])
+				[button addTarget:self action:@selector(showSettings:) forControlEvents:UIControlEventTouchUpInside];
 			else
 				[button addTarget:self action:@selector(insertCharacter:) forControlEvents:UIControlEventTouchUpInside];
 			[button setTitleColor:[UIColor blackColor] forState:0];
 			[button setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-			if([title isEqual:@"Run"] || [title isEqual:@"↑"] || [title isEqual:@"↓"])
+			if([title isEqual:@"Run"] || [title isEqual:@"↑"] || [title isEqual:@"↓"] || [title isEqual:@"⌘"])
 				button.backgroundColor = [UIColor colorWithRed:.8 green:.92 blue:.8 alpha:1.];
 			else
 				button.backgroundColor = [UIColor whiteColor];
@@ -121,7 +152,12 @@ void printfunc(lua_State *L, const char *output)
 		[self output:[NSString stringWithFormat:@"Loading %@…\n", [path lastPathComponent]]];
 		luaL_dofile(L, [path UTF8String]);
 	}
+	
+	[self load];
+	
 	[self output:@"Ready.\n"];
+	
+	[out scrollRangeToVisible:NSMakeRange(out.text.length, 0)];
 	
 	[in becomeFirstResponder];	
 }
@@ -141,19 +177,68 @@ void printfunc(lua_State *L, const char *output)
 	[out release]; out = nil;
 }
 
--(void)save;
-{
-	[[NSUserDefaults standardUserDefaults] setObject:in.text forKey:@"inHistory"];
-	[[NSUserDefaults standardUserDefaults] setObject:out.text forKey:@"outHistory"];
-	[[NSUserDefaults standardUserDefaults] setObject:commandHistory forKey:@"commandHistory"];
-}
-
 - (void)dealloc {
 	lua_close(L); L = NULL;
 	[commandHistory release]; commandHistory = nil;
 	self.savedCommand = nil;
 	[super dealloc];
 }
+
+
+-(NSString *)dumpsPath;
+{
+	NSArray *appSupports = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *appSupport = [appSupports objectAtIndex:0];
+	NSString *dumps = [appSupport stringByAppendingPathComponent:@"dumps"];
+	return dumps;
+}
+
+-(void)save;
+{
+	[[NSUserDefaults standardUserDefaults] setObject:in.text forKey:@"inHistory"];
+	[[NSUserDefaults standardUserDefaults] setObject:out.text forKey:@"outHistory"];
+	[[NSUserDefaults standardUserDefaults] setObject:commandHistory forKey:@"commandHistory"];
+	
+	NSString *dumps = [self dumpsPath];
+	[[NSFileManager defaultManager] removeItemAtPath:dumps error:nil];
+	[[NSFileManager defaultManager] createDirectoryAtPath:dumps withIntermediateDirectories:YES attributes:nil error:nil];
+	
+	for (NSString *funcname in [[NSUserDefaults standardUserDefaults] arrayForKey:@"functionsToSave"]) {
+		lua_getglobal(L, [funcname UTF8String]);
+		NSMutableData *d = [NSMutableData data];
+		int status = lua_dump(L, LuaNSDataWriter, d);
+		if(status != 0) {
+			[self output:[NSString stringWithFormat:@"Error dumping %@: %d\n", funcname, status]];
+		} else {
+			[self output:[NSString stringWithFormat:@"Dumped %@\n", funcname]];
+			NSString *funcdumpPath = [dumps stringByAppendingPathComponent:funcname];
+			[d writeToFile:funcdumpPath atomically:NO];
+		}
+
+		lua_pop(L, 1);
+	}
+}
+-(void)load;
+{
+	NSString *dumps = [self dumpsPath];
+	for (NSString *funcname in [[NSFileManager defaultManager] directoryContentsAtPath:dumps]) {
+		NSString *fullPath = [dumps stringByAppendingPathComponent:funcname];
+		struct DataReaderTemp dataTemp;
+		dataTemp.done = NO;
+		dataTemp.d = [NSData dataWithContentsOfFile:fullPath];
+		if(!dataTemp.d) continue;
+		
+		int status = lua_load(L, LuaNSDataReader, &dataTemp, [funcname UTF8String]);
+		if(status != 0) {
+			[self output:[NSString stringWithFormat:@"Error loading %@: %d\n", funcname, status]];
+			[self dumpStackIndex:-1 repr:NO];
+		} else {
+			lua_setglobal(L, [funcname UTF8String]);
+			[self output:[NSString stringWithFormat:@"Loaded %@\n", funcname]];
+		}
+	}
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 {
@@ -277,10 +362,26 @@ static const int kMaxLinesOfScrollback = 100;
 		newOut = [newLines componentsJoinedByString:@"\n"];
 	}
 	out.text = newOut;
-	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
+	[out scrollRangeToVisible:NSMakeRange(out.text.length, 0)];
 }
 
-
+-(IBAction)showSettings:(UIButton*)sender;
+{
+	UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:settings];
+	popover.delegate = self;
+	popover.popoverContentSize = settings.container.frame.size;
+	CGRect buttonRect = [sender convertRect:[sender frame] toView:self.view.window];
+	buttonRect.origin.x -= 50;
+	buttonRect.size = CGSizeMake(0,0);
+	[popover presentPopoverFromRect:buttonRect
+													 inView:self.view.window
+				 permittedArrowDirections:UIPopoverArrowDirectionDown
+												 animated:YES];
+}
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover;
+{
+	[popover release];
+}
 
 
 #pragma mark
