@@ -7,25 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "lua.h"
-#import "lauxlib.h"
-#import "lualib.h"
-#import "lstate.h"
+#import "ShellController.h"
+
 
 @interface padluaAppDelegate : NSObject <UIApplicationDelegate> {
-    IBOutlet UIWindow *window;
-		IBOutlet UITextView *out;
-		IBOutlet UITextView *in;
-		lua_State *L;
-		NSMutableArray *commandHistory;
-		int commandIndex;
-		NSString *savedCommand;
+	IBOutlet UIWindow *window;
+	IBOutlet ShellController *shell;
 }
--(IBAction)insertCharacter:(UIButton*)sender;
--(IBAction)runCurrent:(UIButton*)sender;
--(IBAction)olderCommand:(id)sender;
--(IBAction)newerCommand:(id)sender;
-
--(void)output:(NSString*)output;
 @end
 
