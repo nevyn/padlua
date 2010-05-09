@@ -4,9 +4,9 @@ local function desFun(index, t)
    local old = _G[index]
    if old then
       if t then
-	 for k, v in pairs(t) do
-	    old[k] = v
-	 end
+         for k, v in pairs(t) do
+            old[k] = v
+         end
       end
       return old
    else
@@ -86,9 +86,9 @@ local function tableSerialize(value, vars, multiline, indent)
    if var then
       local touched = vars[var]
       if touched then
-	 return "_(" .. var .. ")"
+         return "_(" .. var .. ")"
       else
-	 vars[var] = true
+         vars[var] = true
       end
    end
 
@@ -104,11 +104,11 @@ local function tableSerialize(value, vars, multiline, indent)
    for k, v in ipairs(value) do
       local vs = serialize_pass2(v, vars, multiline, nextIndent)
       if vs == "nil" then
-	 -- abort, since this will mean the end of integer keys
-	 break
+         -- abort, since this will mean the end of integer keys
+         break
       end
       if wantComma then
-	 res = res .. ","
+         res = res .. ","
       end
         res = res .. (multiline and "\n" or "") .. nextIndent
       res = res .. vs
@@ -118,18 +118,18 @@ local function tableSerialize(value, vars, multiline, indent)
    end
    for k, v in pairs(value) do
       if type(k) == "number" and k == math.floor(k) and 1 <= k and k <= lastInt then
-	 -- ignore this, it's already in the table
+         -- ignore this, it's already in the table
       else
-	 local ks = tableKey(k, vars, multiline, nextIndent)
-	 local vs = serialize_pass2(v, vars, multiline, nextIndent)
-	 if ks ~= "nil" and vs ~= "nil" then
-	    if wantComma then
-	       res = res .. ","
-	    end
+         local ks = tableKey(k, vars, multiline, nextIndent)
+         local vs = serialize_pass2(v, vars, multiline, nextIndent)
+         if ks ~= "nil" and vs ~= "nil" then
+            if wantComma then
+               res = res .. ","
+            end
         res = res .. (multiline and "\n" or "") .. nextIndent
-	    res = res .. ks .. "=" .. vs
-	    wantComma = true
-	 end
+            res = res .. ks .. "=" .. vs
+            wantComma = true
+         end
       end
    end
    res = res .. (multiline and "\n" or "") .. indent
@@ -152,18 +152,18 @@ local function getVars(value, t, curVar)
    t = t or {}
    if type(value) == "table" then
       if t[value] then
-	 if t[value] == 0 then
-	    t[value] = curVar
-	    curVar = curVar + 1
-	 end
+         if t[value] == 0 then
+            t[value] = curVar
+            curVar = curVar + 1
+         end
       else
-	 t[value] = 0
-	 for k, v in pairs(value) do
-	    local t2, curVar2 = getVars(k, t, curVar)
-	    curVar = curVar2
-	    local t2, curVar2 = getVars(v, t, curVar)
-	    curVar = curVar2
-	 end
+         t[value] = 0
+         for k, v in pairs(value) do
+            local t2, curVar2 = getVars(k, t, curVar)
+            curVar = curVar2
+            local t2, curVar2 = getVars(v, t, curVar)
+            curVar = curVar2
+         end
       end
    end
    return t, curVar
@@ -174,7 +174,7 @@ function serialize(value, multiline, indent)
    local vars = getVars(value, nil, 1)
    for k, v in pairs(vars) do
       if v == 0 then
-	 vars[k] = nil
+         vars[k] = nil
       end
    end
    return serialize_pass2(value, vars, multiline, indent)

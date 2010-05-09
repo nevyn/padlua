@@ -39,9 +39,9 @@
 		05D862C41195C47F004BA8F5 /* lvm.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D862A21195C47F004BA8F5 /* lvm.c */; };
 		05D862C51195C47F004BA8F5 /* lzio.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D862A41195C47F004BA8F5 /* lzio.c */; };
 		05D862C61195C47F004BA8F5 /* print.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D862A61195C47F004BA8F5 /* print.c */; };
-		05D864BA119601B9004BA8F5 /* repr.lua in Resources */ = {isa = PBXBuildFile; fileRef = 05D864B9119601B9004BA8F5 /* repr.lua */; };
 		05D865C71196D197004BA8F5 /* ShellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05D865C51196D197004BA8F5 /* ShellController.m */; };
 		05D865C81196D197004BA8F5 /* ShellController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05D865C61196D197004BA8F5 /* ShellController.xib */; };
+		05D8667211970297004BA8F5 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = 05D8666F11970297004BA8F5 /* lib */; };
 		1D3623260D0F684500981E51 /* padluaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* padluaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -106,10 +106,10 @@
 		05D862A41195C47F004BA8F5 /* lzio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzio.c; path = "lua-5.1.4/src/lzio.c"; sourceTree = "<group>"; };
 		05D862A51195C47F004BA8F5 /* lzio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lzio.h; path = "lua-5.1.4/src/lzio.h"; sourceTree = "<group>"; };
 		05D862A61195C47F004BA8F5 /* print.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = print.c; path = "lua-5.1.4/src/print.c"; sourceTree = "<group>"; };
-		05D864B9119601B9004BA8F5 /* repr.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = repr.lua; sourceTree = "<group>"; };
 		05D865C41196D197004BA8F5 /* ShellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShellController.h; sourceTree = "<group>"; };
 		05D865C51196D197004BA8F5 /* ShellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShellController.m; sourceTree = "<group>"; };
 		05D865C61196D197004BA8F5 /* ShellController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShellController.xib; sourceTree = "<group>"; };
+		05D8666F11970297004BA8F5 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* padluaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = padluaAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* padluaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = padluaAppDelegate.m; sourceTree = "<group>"; };
@@ -243,8 +243,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				05D8666F11970297004BA8F5 /* lib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
-				05D864B9119601B9004BA8F5 /* repr.lua */,
 				8D1107310486CEB800E47090 /* padlua-Info.plist */,
 			);
 			name = Resources;
@@ -267,6 +267,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "padlua" */;
 			buildPhases = (
+				05D86675119702B3004BA8F5 /* ShellScript */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
@@ -303,12 +304,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				05D864BA119601B9004BA8F5 /* repr.lua in Resources */,
 				05D865C81196D197004BA8F5 /* ShellController.xib in Resources */,
+				05D8667211970297004BA8F5 /* lib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		05D86675119702B3004BA8F5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "touch lib";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {

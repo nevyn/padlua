@@ -10,6 +10,15 @@
 
 @implementation padluaAppDelegate
 
++(void)initialize;
+{
+	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+		[NSArray array], @"commandHistory",
+		@"", @"inHistory",
+		@"", @"outHistory",
+		nil
+	]];
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;

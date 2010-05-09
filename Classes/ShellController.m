@@ -78,12 +78,11 @@ void printfunc(lua_State *L, const char *output)
 -(void)commonInit;
 {
 	singleton = self;
-	commandHistory = [NSMutableArray new];
-	
+	commandHistory = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"commandHistory"] mutableCopy];
+	commandIndex = -1;
 	L = lua_open();
 	G(L)->printfunc = printfunc;
 	luaL_openlibs(L);
-	luaL_dofile(L, [[[NSBundle mainBundle] pathForResource:@"repr" ofType:@"lua"] UTF8String]);
 }
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 {
@@ -100,6 +99,11 @@ void printfunc(lua_State *L, const char *output)
 	
 	[self commonInit];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+																					 selector:@selector(save) 
+																							 name:UIApplicationWillTerminateNotification
+																						 object:nil];
+	
 	return self;
 }
 
@@ -107,9 +111,17 @@ void printfunc(lua_State *L, const char *output)
 	[super viewDidLoad];
 	in.inputAccessoryView = [self keyboardAccessory];
 	
+	in.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"inHistory"];
+	out.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"outHistory"];
+	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 
+	for (NSString *path in [[NSBundle mainBundle] pathsForResourcesOfType:@"lua" inDirectory:@"lib"]) {
+		[self output:[NSString stringWithFormat:@"Loading %@…\n", [path lastPathComponent]]];
+		luaL_dofile(L, [path UTF8String]);
+	}
+	[self output:@"Ready.\n"];
 	
 	[in becomeFirstResponder];	
 }
@@ -117,6 +129,7 @@ void printfunc(lua_State *L, const char *output)
 - (void)didReceiveMemoryWarning;
 {
     [super didReceiveMemoryWarning];
+		lua_gc(L, LUA_GCCOLLECT, 0);
 }
 
 
@@ -128,6 +141,12 @@ void printfunc(lua_State *L, const char *output)
 	[out release]; out = nil;
 }
 
+-(void)save;
+{
+	[[NSUserDefaults standardUserDefaults] setObject:in.text forKey:@"inHistory"];
+	[[NSUserDefaults standardUserDefaults] setObject:out.text forKey:@"outHistory"];
+	[[NSUserDefaults standardUserDefaults] setObject:commandHistory forKey:@"commandHistory"];
+}
 
 - (void)dealloc {
 	lua_close(L); L = NULL;
@@ -247,9 +266,17 @@ void printfunc(lua_State *L, const char *output)
 	}		
 }
 
+static const int kMaxLinesOfScrollback = 100;
+
 -(void)output:(NSString *)output;
 {
-	out.text = [out.text stringByAppendingString:output];
+	NSString *newOut = [out.text stringByAppendingString:output];
+	NSArray *lines = [newOut componentsSeparatedByString:@"\n"];
+	if(lines.count > kMaxLinesOfScrollback) {
+		NSArray *newLines = [lines subarrayWithRange:NSMakeRange(lines.count-kMaxLinesOfScrollback, kMaxLinesOfScrollback)];
+		newOut = [newLines componentsJoinedByString:@"\n"];
+	}
+	out.text = newOut;
 	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 }
 

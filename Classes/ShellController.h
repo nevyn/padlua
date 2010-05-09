@@ -28,5 +28,5 @@
 -(IBAction)newerCommand:(id)sender;
 
 -(void)output:(NSString*)output;
-
+-(void)save;
 @end
