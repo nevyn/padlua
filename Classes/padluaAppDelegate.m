@@ -37,19 +37,25 @@ void printfunc(lua_State *L, const char *output)
 	
 	commandHistory = [NSMutableArray new];
 	
-	NSArray *row2 = [NSArray arrayWithObjects:
+	
+	NSArray *row1 = [NSArray arrayWithObjects:
 		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @":", @"_", nil
 	];
-	NSArray *row1 = [NSArray arrayWithObjects:
+	NSArray *row2 = [NSArray arrayWithObjects:
 		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", @"{", @"}", @";", @"Run", nil
 	];
-	
 	NSArray *rows = [NSArray arrayWithObjects:row1, row2, nil];
+	
 	CGRect scr = [UIScreen mainScreen].bounds;
-	CGRect pen = CGRectMake(0, scr.size.height-263, 0 , 44);
+	UIView *keyboardAccessory = [[[UIView alloc] initWithFrame:CGRectMake(
+		0, 0, scr.size.width, rows.count*50 + rows.count
+	)] autorelease];
+	
+	
+	CGRect pen = CGRectMake(0, -50, 0, 50);
 	for(int i = 0; i < [rows count]; i++) {
 		NSArray *row = [rows objectAtIndex:i];
-		pen.origin.y -= pen.size.height + 1;
+		pen.origin.y += pen.size.height + 1;
 		pen.origin.x = 0;
 		pen.size.width = scr.size.width/[row count] - 1;
 		for(int j = 0; j < [row count]; j++) {
@@ -71,10 +77,11 @@ void printfunc(lua_State *L, const char *output)
 				button.backgroundColor = [UIColor whiteColor];
 			[button setTitle:title forState:0];
 			
-			[window addSubview:button];
+			[keyboardAccessory addSubview:button];
 			pen.origin.x += pen.size.width + 1;
 		}
 	}
+	in.inputAccessoryView = keyboardAccessory;
 	
 	[in becomeFirstResponder];
 	
