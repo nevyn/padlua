@@ -68,7 +68,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	
 	CGRect scr = [UIScreen mainScreen].bounds;
 	UIView *keyboardAccessory = [[[UIView alloc] initWithFrame:CGRectMake(
-		0, 0, scr.size.width, rows.count*50 + rows.count
+		0, 0, scr.size.width, rows.count*55 + rows.count + 5
 	)] autorelease];
 	
 	
@@ -158,7 +158,8 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 
 	for (NSString *path in [[NSBundle mainBundle] pathsForResourcesOfType:@"lua" inDirectory:@"lib"]) {
 		[self output:[NSString stringWithFormat:@"Loading %@…\n", [path lastPathComponent]]];
-		luaL_dofile(L, [path UTF8String]);
+		luaL_loadfile(L, [path UTF8String]);
+		lua_pcall(L, 0, 0, 0);
 	}
 	
 	[self load];
@@ -238,12 +239,11 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		
 		int status = lua_load(L, LuaNSDataReader, &dataTemp, [funcname UTF8String]);
 		if(status != 0) {
-			[self output:[NSString stringWithFormat:@"Error loading %@: %d\n", funcname, status]];
+			[self output:[NSString stringWithFormat:@"Error loading function %@: %d\n", funcname, status]];
 			[self dumpStackIndex:-1 repr:NO];
 		} else {
 			lua_setglobal(L, [funcname UTF8String]);
-			[self output:[NSString stringWithFormat:@"Loaded %@\n", funcname]];
-			lua_pop(L, 1);
+			[self output:[NSString stringWithFormat:@"Loaded function %@\n", funcname]];
 		}
 	}
 }
@@ -261,14 +261,24 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 -(void)dumpStackIndex:(int)idx repr:(BOOL)repr;
 {
 	if(repr) {
-		lua_getglobal(L, "serialize");
+		// If the object at idx has __tostring in its metatable, use that instead of serialize
+		int before = lua_gettop(L);
+		luaL_getmetafield(L, idx, "__tostring");
+		BOOL foundToString = lua_gettop(L) != before;
+		
+		if(!foundToString)
+			lua_getglobal(L, "serialize");
+			
 		lua_pushvalue(L, idx);
 		lua_call(L, 1, 1);
 	}
+	
 	size_t l;
 	const char *c = lua_tolstring(L, -1, &l);
 	if(c) {
 		NSString *n = [[[NSString alloc] initWithBytes:c length:l encoding:NSUTF8StringEncoding] autorelease];
+		if([n componentsSeparatedByString:@"\n"].count > 1)
+			[self output:@"\n"];
 		[self output:n];
 		[self output:@"\n"];
 	}
@@ -300,7 +310,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		[commandHistory removeLastObject];
 	commandIndex = -1;
 	
-	int stacktop = lua_gettop(L);
+	const int stacktop = lua_gettop(L);
 	
 	NSString *withReturnPrefix = [@"return " stringByAppendingString:in.text];
 	
