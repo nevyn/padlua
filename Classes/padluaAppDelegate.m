@@ -86,9 +86,39 @@ void printfunc(lua_State *L, const char *output)
 	return YES;
 }
 
+-(void)dumpStackIndex:(int)idx repr:(BOOL)repr;
+{
+	if(repr) {
+		lua_getglobal(L, "serialize");
+		lua_pushvalue(L, idx);
+		lua_call(L, 1, 1);
+	}
+	size_t l;
+	const char *c = lua_tolstring(L, -1, &l);
+	if(c) {
+		NSString *n = [[[NSString alloc] initWithBytes:c length:l encoding:NSUTF8StringEncoding] autorelease];
+		[self output:n];
+		[self output:@"\n"];
+	}
+	if(repr)
+		lua_pop(L, 1);
+}
+
+-(void)dumpStackDownTo:(int)downTo repr:(BOOL)repr prefix:(NSString*)prefix;
+{
+	for(int i = lua_gettop(L); i > downTo; i--) {
+		[self output:[NSString stringWithFormat:@"%@%d: ", prefix, i]];
+		[self dumpStackIndex:i repr:repr];
+	}
+}
+
 -(IBAction)insertCharacter:(UIButton*)sender;
 {
-	in.text = [in.text stringByAppendingString:sender.currentTitle];
+	NSMutableString *newIn = [[in.text mutableCopy] autorelease];
+	NSRange selRange = in.selectedRange;
+	[newIn insertString:sender.currentTitle atIndex:NSMaxRange(selRange)];
+	in.text = newIn;
+	in.selectedRange = NSMakeRange(selRange.location+[sender currentTitle].length, 0);
 }
 -(IBAction)runCurrent:(UIButton*)sender;
 {
@@ -100,30 +130,34 @@ void printfunc(lua_State *L, const char *output)
 	
 	int stacktop = lua_gettop(L);
 	
-	luaL_loadstring(L, [in.text UTF8String]);
-
-	if(lua_pcall(L, 0, LUA_MULTRET, 0) != 0)
-		[self output:@"ERROR"];
-		
-	BOOL outputNumbers = lua_gettop(L)-stacktop > 1;
+	NSString *withReturnPrefix = [@"return " stringByAppendingString:in.text];
 	
-	for(int i = 0; lua_gettop(L) != stacktop; i++) {
-		if(outputNumbers)
-			[self output:[NSString stringWithFormat:@"%d: ", i]];
-		else
-			[self output:@": "];
-		
-		size_t l;
-		const char *c = lua_tolstring(L, -1, &l);
-		if(c) {
-			NSString *n = [[[NSString alloc] initWithBytes:c length:l encoding:NSUTF8StringEncoding] autorelease];
-			[self output:n];
-			[self output:@"\n"];
-		}
-		
-		lua_pop(L, 1);
+	BOOL successfulParse = luaL_loadstring(L, [withReturnPrefix UTF8String]) == 0;
+	if(!successfulParse) {
+		lua_pop(L, 1); // Remove the error
+		successfulParse = luaL_loadstring(L, [in.text UTF8String]) == 0;
 	}
-		
+	if(!successfulParse) {
+		[self dumpStackDownTo:stacktop repr:NO prefix:@"Parse error "];
+	} else {
+		BOOL runError = lua_pcall(L, 0, LUA_MULTRET, 0) != 0;
+		if(runError)
+			[self dumpStackDownTo:stacktop repr:!runError prefix:@"Run error "];
+		else {
+			for(int i = stacktop+1; i <= lua_gettop(L); i++) {
+				NSString *retname = [NSString stringWithFormat:@"ret%d", i];
+
+				lua_pushvalue(L, i);
+				lua_setglobal(L, [retname UTF8String]);
+
+				[self output:[NSString stringWithFormat:@"%@: ", retname]];
+				[self dumpStackIndex:i repr:YES];
+
+			}
+		}
+	}
+	
+	lua_pop(L, lua_gettop(L)-stacktop);
 	
 	in.text = @"";
 }
