@@ -111,6 +111,14 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	singleton = self;
 	commandHistory = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"commandHistory"] mutableCopy];
 	commandIndex = -1;
+	
+	NSString *libDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"lib"];
+	
+	NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *userLibDir = [[docDirs objectAtIndex:0] stringByAppendingPathComponent:@"lib"];
+	NSString *newEnv = [NSString stringWithFormat:@"%@/?.lua;%@/?.lua;;", userLibDir, libDir];
+	setenv(LUA_PATH, [newEnv UTF8String], YES);
+	
 	L = lua_open();
 	G(L)->printfunc = printfunc;
 	luaL_openlibs(L);
@@ -235,6 +243,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		} else {
 			lua_setglobal(L, [funcname UTF8String]);
 			[self output:[NSString stringWithFormat:@"Loaded %@\n", funcname]];
+			lua_pop(L, 1);
 		}
 	}
 }
