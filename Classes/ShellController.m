@@ -181,7 +181,7 @@ void printfunc(lua_State *L, const char *output)
 }
 -(IBAction)runCurrent:(UIButton*)sender;
 {
-	out.text = [out.text stringByAppendingFormat:@"> %@\n", in.text];
+	[self output:[NSString stringWithFormat:@"> %@\n", in.text]];
 	[commandHistory insertObject:in.text atIndex:0];
 	if([commandHistory count] > 50)
 		[commandHistory removeLastObject];
@@ -223,7 +223,7 @@ void printfunc(lua_State *L, const char *output)
 -(IBAction)olderCommand:(id)sender;
 {
 	int newIndex = commandIndex + 1;
-	if(newIndex > [commandHistory count]-1)
+	if(newIndex > (int)([commandHistory count]-1))
 		return;
 	
 	if(commandIndex == -1)
@@ -250,6 +250,7 @@ void printfunc(lua_State *L, const char *output)
 -(void)output:(NSString *)output;
 {
 	out.text = [out.text stringByAppendingString:output];
+	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 }
 
 
