@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "SettingsController.h"
+#import "LuaCanvas2D.h"
+
 #import "lua.h"
 #import "lauxlib.h"
 #import "lualib.h"

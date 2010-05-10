@@ -44,6 +44,7 @@
 		05D8667211970297004BA8F5 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = 05D8666F11970297004BA8F5 /* lib */; };
 		05D8670511970C53004BA8F5 /* SettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05D8670311970C52004BA8F5 /* SettingsController.m */; };
 		05D8670611970C53004BA8F5 /* SettingsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05D8670411970C52004BA8F5 /* SettingsController.xib */; };
+		05D869FA11975731004BA8F5 /* LuaCanvas2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 05D869F911975731004BA8F5 /* LuaCanvas2D.m */; };
 		1D3623260D0F684500981E51 /* padluaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* padluaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -115,6 +116,8 @@
 		05D8670211970C52004BA8F5 /* SettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsController.h; sourceTree = "<group>"; };
 		05D8670311970C52004BA8F5 /* SettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsController.m; sourceTree = "<group>"; };
 		05D8670411970C52004BA8F5 /* SettingsController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsController.xib; sourceTree = "<group>"; };
+		05D869F811975731004BA8F5 /* LuaCanvas2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LuaCanvas2D.h; sourceTree = "<group>"; };
+		05D869F911975731004BA8F5 /* LuaCanvas2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LuaCanvas2D.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* padluaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = padluaAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* padluaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = padluaAppDelegate.m; sourceTree = "<group>"; };
@@ -214,6 +217,8 @@
 				05D8670211970C52004BA8F5 /* SettingsController.h */,
 				05D8670311970C52004BA8F5 /* SettingsController.m */,
 				05D8670411970C52004BA8F5 /* SettingsController.xib */,
+				05D869F811975731004BA8F5 /* LuaCanvas2D.h */,
+				05D869F911975731004BA8F5 /* LuaCanvas2D.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -378,6 +383,7 @@
 				05D862C61195C47F004BA8F5 /* print.c in Sources */,
 				05D865C71196D197004BA8F5 /* ShellController.m in Sources */,
 				05D8670511970C53004BA8F5 /* SettingsController.m in Sources */,
+				05D869FA11975731004BA8F5 /* LuaCanvas2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

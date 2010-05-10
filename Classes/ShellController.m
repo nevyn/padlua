@@ -119,9 +119,12 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	NSString *newEnv = [NSString stringWithFormat:@"%@/?.lua;%@/?.lua;;", userLibDir, libDir];
 	setenv(LUA_PATH, [newEnv UTF8String], YES);
 	
+	[[NSFileManager defaultManager] changeCurrentDirectoryPath:[docDirs objectAtIndex:0]];
+	
 	L = lua_open();
 	G(L)->printfunc = printfunc;
 	luaL_openlibs(L);
+	[LuaCanvas2D publishModuleInState:L];
 }
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 {
