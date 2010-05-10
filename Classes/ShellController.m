@@ -157,17 +157,26 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	out.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"outHistory"];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-
+	
+	NSArray *loadedLibs = [NSArray array];
 	for (NSString *path in [[NSBundle mainBundle] pathsForResourcesOfType:@"lua" inDirectory:@"lib"]) {
-		[self output:[NSString stringWithFormat:@"Loading %@…\n", [path lastPathComponent]]];
-		luaL_loadfile(L, [path UTF8String]);
-		lua_pcall(L, 0, 0, 0);
+		BOOL success = luaL_loadfile(L, [path UTF8String]) == 0;
+		if(success)
+			success = lua_pcall(L, 0, 0, 0) == 0;
+		if(success)
+			loadedLibs = [loadedLibs arrayByAddingObject:[path lastPathComponent]];
+		else {
+			[self output:[NSString stringWithFormat:@"Error loading %@: ", [path lastPathComponent]]];
+			[self dumpStackIndex:-1 repr:NO];
+			lua_pop(L, 1);
+		}
+
 	}
+	[self output:[NSString stringWithFormat:@"Loaded libraries %@; functions ", [loadedLibs componentsJoinedByString:@", "]]];
 	
 	[self load];
-	
-	[self output:@"Ready.\n"];
 	
 	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 	
@@ -214,7 +223,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	NSString *dumps = [self dumpsPath];
 	[[NSFileManager defaultManager] removeItemAtPath:dumps error:nil];
 	[[NSFileManager defaultManager] createDirectoryAtPath:dumps withIntermediateDirectories:YES attributes:nil error:nil];
-	
+
 	for (NSString *funcname in [[NSUserDefaults standardUserDefaults] arrayForKey:@"functionsToSave"]) {
 		lua_getglobal(L, [funcname UTF8String]);
 		NSMutableData *d = [NSMutableData data];
@@ -233,6 +242,8 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 -(void)load;
 {
 	NSString *dumps = [self dumpsPath];
+	NSArray *successfulLoads = [NSArray array];
+
 	for (NSString *funcname in [[NSFileManager defaultManager] directoryContentsAtPath:dumps]) {
 		NSString *fullPath = [dumps stringByAppendingPathComponent:funcname];
 		struct DataReaderTemp dataTemp;
@@ -242,13 +253,15 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		
 		int status = lua_load(L, LuaNSDataReader, &dataTemp, [funcname UTF8String]);
 		if(status != 0) {
-			[self output:[NSString stringWithFormat:@"Error loading function %@: %d\n", funcname, status]];
+			[self output:[NSString stringWithFormat:@"Error loading function %@: ", funcname, status]];
 			[self dumpStackIndex:-1 repr:NO];
+			lua_pop(L, 1);
 		} else {
 			lua_setglobal(L, [funcname UTF8String]);
-			[self output:[NSString stringWithFormat:@"Loaded function %@\n", funcname]];
+			successfulLoads = [successfulLoads arrayByAddingObject:funcname];
 		}
 	}
+	[self output:[[successfulLoads componentsJoinedByString:@", "] stringByAppendingString:@"\n"]];
 }
 
 
@@ -442,6 +455,10 @@ static const int kMaxLinesOfScrollback = 100;
     container.frame = newTextViewFrame;
 
     [UIView commitAnimations];
+}
+- (void)keyboardDidShow:(NSNotification*)notif;
+{
+	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 }
 
 
