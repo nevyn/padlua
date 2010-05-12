@@ -45,6 +45,10 @@
 		05D8670511970C53004BA8F5 /* SettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05D8670311970C52004BA8F5 /* SettingsController.m */; };
 		05D8670611970C53004BA8F5 /* SettingsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05D8670411970C52004BA8F5 /* SettingsController.xib */; };
 		05D869FA11975731004BA8F5 /* LuaCanvas2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 05D869F911975731004BA8F5 /* LuaCanvas2D.m */; };
+		05D86ACF119A7EFE004BA8F5 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 05D86ACE119A7EFE004BA8F5 /* index.html */; };
+		05D86AE3119A7F4A004BA8F5 /* manual.html in Resources */ = {isa = PBXBuildFile; fileRef = 05D86AE2119A7F4A004BA8F5 /* manual.html */; };
+		05D86AF0119A7F87004BA8F5 /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = 05D86AEF119A7F87004BA8F5 /* logo.gif */; };
+		05D86AF6119A7FC1004BA8F5 /* cover.png in Resources */ = {isa = PBXBuildFile; fileRef = 05D86AF5119A7FC1004BA8F5 /* cover.png */; };
 		1D3623260D0F684500981E51 /* padluaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* padluaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -118,6 +122,10 @@
 		05D8670411970C52004BA8F5 /* SettingsController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsController.xib; sourceTree = "<group>"; };
 		05D869F811975731004BA8F5 /* LuaCanvas2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LuaCanvas2D.h; sourceTree = "<group>"; };
 		05D869F911975731004BA8F5 /* LuaCanvas2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LuaCanvas2D.m; sourceTree = "<group>"; };
+		05D86ACE119A7EFE004BA8F5 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		05D86AE2119A7F4A004BA8F5 /* manual.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = manual.html; sourceTree = "<group>"; };
+		05D86AEF119A7F87004BA8F5 /* logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = logo.gif; sourceTree = "<group>"; };
+		05D86AF5119A7FC1004BA8F5 /* cover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cover.png; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* padluaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = padluaAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* padluaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = padluaAppDelegate.m; sourceTree = "<group>"; };
@@ -259,6 +267,10 @@
 				05D8666F11970297004BA8F5 /* lib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* padlua-Info.plist */,
+				05D86AE2119A7F4A004BA8F5 /* manual.html */,
+				05D86ACE119A7EFE004BA8F5 /* index.html */,
+				05D86AF5119A7FC1004BA8F5 /* cover.png */,
+				05D86AEF119A7F87004BA8F5 /* logo.gif */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -320,6 +332,10 @@
 				05D865C81196D197004BA8F5 /* ShellController.xib in Resources */,
 				05D8667211970297004BA8F5 /* lib in Resources */,
 				05D8670611970C53004BA8F5 /* SettingsController.xib in Resources */,
+				05D86ACF119A7EFE004BA8F5 /* index.html in Resources */,
+				05D86AE3119A7F4A004BA8F5 /* manual.html in Resources */,
+				05D86AF0119A7F87004BA8F5 /* logo.gif in Resources */,
+				05D86AF6119A7FC1004BA8F5 /* cover.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

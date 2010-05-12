@@ -59,7 +59,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 -(UIView*)keyboardAccessory;
 {
 	NSArray *row1 = [NSArray arrayWithObjects:
-		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @"⌘", @"Run", nil
+		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @"Help", @"Run", nil
 	];
 	NSArray *row2 = [NSArray arrayWithObjects:
 		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", @"{", @"}", @";", @"_", nil
@@ -89,11 +89,13 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 				[button addTarget:self action:@selector(newerCommand:) forControlEvents:UIControlEventTouchUpInside];
 			else if([title isEqual:@"⌘"])
 				[button addTarget:self action:@selector(showSettings:) forControlEvents:UIControlEventTouchUpInside];
+			else if([title isEqual:@"Help"])
+				[button addTarget:self action:@selector(showHelp:) forControlEvents:UIControlEventTouchUpInside];
 			else
 				[button addTarget:self action:@selector(insertCharacter:) forControlEvents:UIControlEventTouchUpInside];
 			[button setTitleColor:[UIColor blackColor] forState:0];
 			[button setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-			if([title isEqual:@"Run"] || [title isEqual:@"↑"] || [title isEqual:@"↓"] || [title isEqual:@"⌘"])
+			if([title isEqual:@"Run"] || [title isEqual:@"↑"] || [title isEqual:@"↓"] || [title isEqual:@"⌘"] || [title isEqual:@"Help"])
 				button.backgroundColor = [UIColor colorWithRed:.8 green:.92 blue:.8 alpha:1.];
 			else
 				button.backgroundColor = [UIColor whiteColor];
@@ -399,7 +401,6 @@ static const int kMaxLinesOfScrollback = 100;
 	out.text = newOut;
 	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
 }
-
 -(IBAction)showSettings:(UIButton*)sender;
 {
 	UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:settings];
@@ -416,6 +417,20 @@ static const int kMaxLinesOfScrollback = 100;
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover;
 {
 	[popover release];
+}
+
+-(IBAction)showHelp:(UIButton*)sender;
+{
+	UIViewController *vc = [[[UIViewController alloc] init] autorelease];
+	UIWebView *web = [[[UIWebView alloc] initWithFrame:vc.view.frame] autorelease];
+	vc.view = web;
+	vc.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissModalViewControllerAnimated:)] autorelease]; 
+	vc.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:web action:@selector(goBack)] autorelease]; 
+
+	vc.title = @"Lua Reference Manual";
+	UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
+	[web loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"manual" ofType:@"html"]]]];
+	[self presentModalViewController:nc animated:YES];
 }
 
 
