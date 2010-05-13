@@ -30,6 +30,8 @@
 	NSString *savedCommand;
 	
 	IBOutlet SettingsController *settings;
+	
+	UINavigationController *helpController;
 }
 -(IBAction)insertCharacter:(UIButton*)sender;
 -(IBAction)runCurrent:(UIButton*)sender;

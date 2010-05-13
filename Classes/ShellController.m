@@ -218,6 +218,8 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		
 	[settings release];
 	
+	[helpController release];
+	
 	[super dealloc];
 }
 
@@ -435,16 +437,18 @@ static const int kMaxLinesOfScrollback = 100;
 
 -(IBAction)showHelp:(UIButton*)sender;
 {
-	UIViewController *vc = [[[UIViewController alloc] init] autorelease];
-	UIWebView *web = [[[UIWebView alloc] initWithFrame:vc.view.frame] autorelease];
-	vc.view = web;
-	vc.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissModalViewControllerAnimated:)] autorelease]; 
-	vc.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:web action:@selector(goBack)] autorelease]; 
+	if(!helpController) {
+		UIViewController *vc = [[[UIViewController alloc] init] autorelease];
+		UIWebView *web = [[[UIWebView alloc] initWithFrame:vc.view.frame] autorelease];
+		vc.view = web;
+		vc.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissModalViewControllerAnimated:)] autorelease]; 
+		vc.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:web action:@selector(goBack)] autorelease]; 
 
-	vc.title = @"Lua Reference Manual";
-	UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
-	[web loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"manual" ofType:@"html"]]]];
-	[self presentModalViewController:nc animated:YES];
+		vc.title = @"Lua Reference Manual";
+		helpController = [[UINavigationController alloc] initWithRootViewController:vc];
+		[web loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"manual" ofType:@"html"]]]];
+	}
+	[self presentModalViewController:helpController animated:YES];
 }
 
 
