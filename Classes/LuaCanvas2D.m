@@ -14,7 +14,8 @@ static LuaCanvas2D *singleton = nil;
 @property (retain) UIColor *strokeColor;
 @property (retain) UIColor *fillColor;
 @property float lineWidth;
-
+-(void)load;
+-(void)save;
 @end
 
 
@@ -48,6 +49,13 @@ static LuaCanvas2D *singleton = nil;
 	self.fillColor = [UIColor blackColor];
 	lineWidth = 1.;
 	
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(save) 
+												 name:UIApplicationWillTerminateNotification
+											   object:nil];
+	[self load];
+	
 	return self;
 }
 
@@ -67,6 +75,22 @@ static LuaCanvas2D *singleton = nil;
 	[super dealloc];
 }
 
+-(NSString *)dumpPath;
+{
+	NSArray *appSupports = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *appSupport = [appSupports objectAtIndex:0];
+	NSString *dumps = [appSupport stringByAppendingPathComponent:@"canvas.png"];
+	return dumps;
+}
+
+-(void)load;
+{
+	self.image = [UIImage imageWithContentsOfFile:self.dumpPath];
+}
+-(void)save;
+{
+	[UIImagePNGRepresentation(self.image) writeToFile:self.dumpPath atomically:NO];
+}
 
 - (void)willRedraw;
 {

@@ -144,9 +144,9 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	[self commonInit];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self 
-																					 selector:@selector(save) 
-																							 name:UIApplicationWillTerminateNotification
-																						 object:nil];
+											 selector:@selector(save) 
+												 name:UIApplicationWillTerminateNotification
+											   object:nil];
 	
 	return self;
 }
