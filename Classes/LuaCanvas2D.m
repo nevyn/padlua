@@ -10,7 +10,16 @@
 
 static LuaCanvas2D *singleton = nil;
 
+@interface LuaCanvas2D ()
+@property (retain) UIColor *strokeColor;
+@property (retain) UIColor *fillColor;
+@property float lineWidth;
+
+@end
+
+
 @implementation LuaCanvas2D
+@synthesize strokeColor, fillColor, lineWidth;
 
 - (id)commonInit;
 {
@@ -35,6 +44,10 @@ static LuaCanvas2D *singleton = nil;
 	
 	self.clipsToBounds = YES;
 	
+	self.strokeColor = [UIColor blackColor];
+	self.fillColor = [UIColor blackColor];
+	lineWidth = 1.;
+	
 	return self;
 }
 
@@ -48,6 +61,13 @@ static LuaCanvas2D *singleton = nil;
 	return [self commonInit];
 }
 
+- (void)dealloc {
+	CGContextRelease(ctx);
+	self.strokeColor = self.fillColor = nil;
+	[super dealloc];
+}
+
+
 - (void)willRedraw;
 {
 	self.image = nil;
@@ -57,10 +77,6 @@ static LuaCanvas2D *singleton = nil;
 	self.image = [UIImage imageWithCGImage:(CGImageRef)[(id)CGBitmapContextCreateImage(ctx) autorelease]];
 }
 
-- (void)dealloc {
-	CGContextRelease(ctx);
-	[super dealloc];
-}
 
 -(void)show:(BOOL)animated;
 {
@@ -123,6 +139,8 @@ static LuaCanvas2D *singleton = nil;
 }
 @end
 
+
+#pragma mark Helpers
 static UIColor *colorFromLuaColor(lua_State *L, int tableI)
 {
 	float components[4] = {0,0,0,1};
@@ -138,25 +156,44 @@ static UIColor *colorFromLuaColor(lua_State *L, int tableI)
 												 alpha:components[3]];
 }
 
-// clear(Color color)
-static int clear(lua_State *L)
+static int luaColorFromColor(lua_State *L, UIColor *color)
 {
-	if(lua_gettop(L) != 1) {
-		lua_pushstring(L, "usage: canvas2d.clear(color)\n");
-		return 1;
+	lua_getglobal(L, "color"); // To be called later
+	
+	// Create the value table for the color to be created
+	lua_createtable(L, 4, 0);
+	int tableI = lua_gettop(L);
+	
+	const float *components = CGColorGetComponents(color.CGColor);
+	
+	for(int i = 1, c = CGColorGetNumberOfComponents(color.CGColor); i <= c; i++) {
+		lua_pushinteger(L, i);
+		lua_pushnumber(L, components[i-1]);
+		lua_settable(L, tableI);
 	}
-	[singleton willRedraw];
 	
-	UIColor *c = colorFromLuaColor(L, lua_gettop(L));
-	lua_pop(L, 1);
+	// Call color constructor
+	if(!lua_pcall(L, 1, 1, 0)) {
+		lua_pop(L, 1); // pop the error message. TODO: error handling :P
+		return 0;
+	}
 	
-	CGContextSetFillColorWithColor(singleton->ctx, c.CGColor);
-	CGContextFillRect(singleton->ctx, CGRectMake(0, 0, singleton.frame.size.width, singleton.frame.size.height));
-	
-	[singleton didRedraw];
-	return 0;
+	return 1;
 }
 
+static CGPoint pointFromLuaVector(lua_State *L, int vecI)
+{
+	float components[2] = {0,0};
+	for(int i = 1; i <= 2; i++) {
+		lua_pushinteger(L, i);
+		lua_gettable(L, vecI);
+		components[i-1] = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+	}
+	return CGPointMake(components[0], components[1]);
+}
+
+#pragma mark Meta
 static int show(lua_State *L)
 {
 	[singleton show:YES];
@@ -169,10 +206,192 @@ static int hide(lua_State *L)
 	return 0;
 }
 
+#pragma mark Drawing
+// clear(Color color)
+static int clear(lua_State *L)
+{
+	if(lua_gettop(L) != 1) {
+		lua_pushstring(L, "usage: canvas2d.clear(color)\n");
+		return 1;
+	}
+	[singleton willRedraw];
+	
+	UIColor *c = colorFromLuaColor(L, lua_gettop(L));
+	lua_pop(L, 1);
+	CGContextSaveGState(singleton->ctx);
+	CGContextSetFillColorWithColor(singleton->ctx, c.CGColor);
+	CGContextFillRect(singleton->ctx, CGRectMake(0, 0, singleton.frame.size.width, singleton.frame.size.height));
+	CGContextRestoreGState(singleton->ctx);
+	
+	[singleton didRedraw];
+	return 0;
+}
+
+
+// move(vector{x,y})
+static int move(lua_State *L)
+{
+	if(lua_gettop(L) != 1) {
+		lua_pushstring(L, "usage: canvas2d.move(vector{x,y})\n"
+			"\tMoves the pen to the given point without drawing anything\n");
+		return 1;
+	}
+	
+	CGPoint p = pointFromLuaVector(L, lua_gettop(L));
+	lua_pop(L, 1);
+	CGContextMoveToPoint(singleton->ctx, p.x, p.y);
+	
+	return 0;
+}
+
+// addLine(vector{x,y})
+static int addLine(lua_State *L)
+{
+	if(lua_gettop(L) != 1) {
+		lua_pushstring(L, "usage: canvas2d.addLine(vector{x,y})\n"
+			"\tMoves the pen to the given point, and adds a straight line to the current\n"
+			"\t path on the way there.\n");
+		return 1;
+	}
+	
+	CGPoint p = pointFromLuaVector(L, lua_gettop(L));
+	lua_pop(L, 1);
+	CGContextAddLineToPoint(singleton->ctx, p.x, p.y);
+	
+	return 0;
+}
+
+// strokeColor([color])
+static int getSetStrokeColor(lua_State *L)
+{
+	if(lua_gettop(L) == 0) {
+		return luaColorFromColor(L, singleton.strokeColor);
+	} else if(lua_gettop(L) == 1) {
+		UIColor *c = colorFromLuaColor(L, lua_gettop(L));
+		lua_pop(L, 1);
+		singleton.strokeColor = c;
+		CGContextSetStrokeColorWithColor(singleton->ctx, c.CGColor);
+		return 0;
+	} else {
+		lua_pushstring(L, "usage: canvas.strokeColor([color])\n"
+			"\tGets color used to stroke paths with if called without arguments,\n"
+			"\tor sets it if called with one argument.\n"
+		);
+		return 1;	
+	}
+}
+
+// fillColor([color])
+static int getSetFillColor(lua_State *L)
+{
+	if(lua_gettop(L) == 0) {
+		return luaColorFromColor(L, singleton.fillColor);
+	} else if(lua_gettop(L) == 1) {
+		UIColor *c = colorFromLuaColor(L, lua_gettop(L));
+		lua_pop(L, 1);
+		singleton.fillColor = c;
+		CGContextSetFillColorWithColor(singleton->ctx, c.CGColor);
+		return 0;
+	} else {
+		lua_pushstring(L, "usage: canvas.fillColor([color])\n"
+			"\tGets color used to fill paths with if called without arguments,\n"
+			"\tor sets it if called with one argument.\n"
+		);
+		return 1;	
+	}
+}
+
+// color([color])
+static int getSetColor(lua_State *L)
+{
+	if(lua_gettop(L) == 0) {
+		return luaColorFromColor(L, singleton.fillColor);
+	} else if(lua_gettop(L) == 1) {
+		UIColor *c = colorFromLuaColor(L, lua_gettop(L));
+		lua_pop(L, 1);
+		singleton.fillColor = c;
+		singleton.strokeColor = c;
+		CGContextSetStrokeColorWithColor(singleton->ctx, c.CGColor);
+		CGContextSetFillColorWithColor(singleton->ctx, c.CGColor);
+		return 0;
+	} else {
+		lua_pushstring(L, "usage: canvas.color([color])\n"
+			"\tGets color used to stroke and fill paths with if called\n"
+			"\twithout arguments, or sets it if called with one argument.\n"
+		);
+		return 1;	
+	}
+}
+
+// lineWidth([number])
+static int getSetLineWidth(lua_State *L)
+{
+	if(lua_gettop(L) == 0) {
+		lua_pushnumber(L, singleton.lineWidth);
+		return 1;
+	} else if(lua_gettop(L) == 1) {
+		float l = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		singleton.lineWidth = l;
+		CGContextSetLineWidth(singleton->ctx, l);
+		return 0;
+	} else {
+		lua_pushstring(L, "usage: canvas.lineWidth([width])\n"
+			"\tGets width used to stroke paths with if called\n"
+			"\twithout arguments, or sets it if called with one argument.\n"
+		);
+		return 1;	
+	}
+}
+
+
+// stroke()
+static int stroke(lua_State *L)
+{
+	if(lua_gettop(L) != 0) {
+		lua_pushstring(L, "usage: canvas2d.stroke()\n"
+			"\tStrokes the current path with the current color.\n"
+		);
+		return 1;
+	}
+	[singleton willRedraw];
+	CGContextStrokePath(singleton->ctx);
+	[singleton didRedraw];
+	return 0;
+}
+
+// fill()
+static int fill(lua_State *L)
+{
+	if(lua_gettop(L) != 0) {
+		lua_pushstring(L, "usage: canvas2d.fill()\n"
+			"\tFills the current path with the current color.\n"
+		);
+		return 1;
+	}
+	[singleton willRedraw];
+	CGContextFillPath(singleton->ctx);
+	[singleton didRedraw];
+	return 0;
+}
+
+
+
+
+#pragma mark Setup
+
 static const luaL_Reg canvasMethods[] = {
 	"clear", clear,
 	"show", show,
 	"hide", hide,
+	"move", move,
+	"addLine", addLine,
+	"strokeColor", getSetStrokeColor,
+	"fillColor", getSetFillColor,
+	"color", getSetColor,
+	"lineWidth", getSetLineWidth,
+	"stroke", stroke,
+	"fill", fill,
 	
 	NULL, NULL
 };

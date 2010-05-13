@@ -13,6 +13,10 @@
 @interface LuaCanvas2D : UIImageView {
 @public
 	CGContextRef ctx;
+@protected
+	UIColor *strokeColor;
+	UIColor *fillColor;
+	float lineWidth;
 }
 -(void)show:(BOOL)animated;
 -(void)hide:(BOOL)animated;
