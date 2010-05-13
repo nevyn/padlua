@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05B6B9E5119C4CE500B21E9B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 05B6B9E4119C4CE500B21E9B /* Default.png */; };
 		05D862A71195C47F004BA8F5 /* lapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D862701195C47F004BA8F5 /* lapi.c */; };
 		05D862A81195C47F004BA8F5 /* lauxlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D862721195C47F004BA8F5 /* lauxlib.c */; };
 		05D862A91195C47F004BA8F5 /* lbaselib.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D862741195C47F004BA8F5 /* lbaselib.c */; };
@@ -58,6 +59,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05B6B9E4119C4CE500B21E9B /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		05D862701195C47F004BA8F5 /* lapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lapi.c; path = "lua-5.1.4/src/lapi.c"; sourceTree = "<group>"; };
 		05D862711195C47F004BA8F5 /* lapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lapi.h; path = "lua-5.1.4/src/lapi.h"; sourceTree = "<group>"; };
 		05D862721195C47F004BA8F5 /* lauxlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lauxlib.c; path = "lua-5.1.4/src/lauxlib.c"; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				05B6B9E4119C4CE500B21E9B /* Default.png */,
 				05D8666F11970297004BA8F5 /* lib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* padlua-Info.plist */,
@@ -336,6 +339,7 @@
 				05D86AE3119A7F4A004BA8F5 /* manual.html in Resources */,
 				05D86AF0119A7F87004BA8F5 /* logo.gif in Resources */,
 				05D86AF6119A7FC1004BA8F5 /* cover.png in Resources */,
+				05B6B9E5119C4CE500B21E9B /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
