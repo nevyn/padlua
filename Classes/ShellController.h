@@ -20,8 +20,10 @@
 <UIPopoverControllerDelegate>
 {
 	IBOutlet UIView *container;
-	IBOutlet UITextView *out;
-	IBOutlet UITextView *in;
+		IBOutlet UIView *outContainer;
+			IBOutlet UITextView *out;
+			IBOutlet LuaCanvas2D *canvas;
+		IBOutlet UITextView *in;
 	lua_State *L;
 	NSMutableArray *commandHistory;
 	int commandIndex;
@@ -36,4 +38,5 @@
 -(IBAction)showSettings:(UIButton*)sender;
 
 -(void)output:(NSString*)output;
+
 @end

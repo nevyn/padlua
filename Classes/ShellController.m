@@ -155,6 +155,11 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	[super viewDidLoad];
 	in.inputAccessoryView = [self keyboardAccessory];
 	
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"canvas2d.shown"])
+		[canvas show:NO];
+	else
+		[canvas hide:NO];
+	
 	in.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"inHistory"];
 	out.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"outHistory"];
 	
@@ -204,6 +209,15 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	lua_close(L); L = NULL;
 	[commandHistory release]; commandHistory = nil;
 	self.savedCommand = nil;
+	
+	[container release];
+		[outContainer release];
+			[out release];
+			[canvas release];
+		[in release];
+		
+	[settings release];
+	
 	[super dealloc];
 }
 
