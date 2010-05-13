@@ -28,9 +28,12 @@ static LuaCanvas2D *singleton = nil;
 		kCGImageAlphaPremultipliedFirst
 	);
 	
+	CGContextScaleCTM(ctx, 1, -1);
+	CGContextTranslateCTM(ctx, 0, -frame.size.height);
+	
 	self.contentMode = UIViewContentModeTopLeft;
 	
-//	self.clipsToBounds = YES;
+	self.clipsToBounds = YES;
 	
 	return self;
 }
