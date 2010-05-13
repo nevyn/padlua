@@ -62,13 +62,13 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @"Help", @"Run", nil
 	];
 	NSArray *row2 = [NSArray arrayWithObjects:
-		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", @"{", @"}", @";", @"_", nil
+		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", @"{", @"}", @";", @":", nil
 	];
 	NSArray *rows = [NSArray arrayWithObjects:row1, row2, nil];
 	
 	CGRect scr = [UIScreen mainScreen].bounds;
 	UIView *keyboardAccessory = [[[UIView alloc] initWithFrame:CGRectMake(
-		0, 0, scr.size.width, rows.count*55 + rows.count + 5
+		0, 0, scr.size.width, rows.count*51 + 1
 	)] autorelease];
 	
 	
@@ -181,7 +181,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		}
 
 	}
-	[self output:[NSString stringWithFormat:@"Loaded libraries %@; functions ", [loadedLibs componentsJoinedByString:@", "]]];
+	//[self output:[NSString stringWithFormat:@"Loaded libraries %@; functions ", [loadedLibs componentsJoinedByString:@", "]]];
 	
 	[self load];
 	
@@ -277,7 +277,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 			successfulLoads = [successfulLoads arrayByAddingObject:funcname];
 		}
 	}
-	[self output:[[successfulLoads componentsJoinedByString:@", "] stringByAppendingString:@"\n"]];
+	//[self output:[[successfulLoads componentsJoinedByString:@", "] stringByAppendingString:@"\n"]];
 }
 
 
