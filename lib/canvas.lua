@@ -10,6 +10,7 @@ function color.new(elements)
       x[k] = v
    end
    setmetatable(x, colorMt)
+   x[4] = 1.0
    for i, e in ipairs(elements) do
       x[i] = e
    end

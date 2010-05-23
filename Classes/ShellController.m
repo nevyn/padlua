@@ -15,6 +15,8 @@
 
 -(void)dumpStackIndex:(int)idx repr:(BOOL)repr;
 -(void)dumpStackDownTo:(int)downTo repr:(BOOL)repr prefix:(NSString*)prefix;
+
+-(void)scrollToBottom;
 @end
 
 static ShellController *singleton = NULL;
@@ -58,13 +60,16 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 
 -(UIView*)keyboardAccessory;
 {
+	NSArray *row0 = [NSArray arrayWithObjects:
+  	@"Run", @"Help", @"Add…", @"{", @"}", @"(", @")", @"[", @"]", nil
+  ];
 	NSArray *row1 = [NSArray arrayWithObjects:
-		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @"(", @")", @"[", @"]", @"Help", @"Run", nil
+		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @";", @":", nil
 	];
 	NSArray *row2 = [NSArray arrayWithObjects:
-		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", @"{", @"}", @";", @":", nil
+		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", nil
 	];
-	NSArray *rows = [NSArray arrayWithObjects:row1, row2, nil];
+	NSArray *rows = [NSArray arrayWithObjects:row0, row1, row2, nil];
 	
 	CGRect scr = [UIScreen mainScreen].bounds;
 	UIView *keyboardAccessory = [[[UIView alloc] initWithFrame:CGRectMake(
@@ -95,7 +100,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 				[button addTarget:self action:@selector(insertCharacter:) forControlEvents:UIControlEventTouchUpInside];
 			[button setTitleColor:[UIColor blackColor] forState:0];
 			[button setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-			if([title isEqual:@"Run"] || [title isEqual:@"↑"] || [title isEqual:@"↓"] || [title isEqual:@"⌘"] || [title isEqual:@"Help"])
+			if(title.length > 1 || [title characterAtIndex:0] > 255)
 				button.backgroundColor = [UIColor colorWithRed:.8 green:.92 blue:.8 alpha:1.];
 			else
 				button.backgroundColor = [UIColor whiteColor];
@@ -155,7 +160,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	[super viewDidLoad];
 	in.inputAccessoryView = [self keyboardAccessory];
 	
-	if([[NSUserDefaults standardUserDefaults] boolForKey:@"canvas2d.shown"])
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"canvas.shown"])
 		[canvas show:NO];
 	else
 		[canvas hide:NO];
@@ -185,8 +190,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	
 	[self load];
 	
-	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
-	
+	[self scrollToBottom];	
 	[in becomeFirstResponder];	
 }
 
@@ -286,6 +290,12 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 {
     return UIInterfaceOrientationIsPortrait(interfaceOrientation);
+}
+
+-(void)scrollToBottom;
+{
+  if(out.text.length > 0)
+		[out scrollRangeToVisible:NSMakeRange(out.text.length, 1)];
 }
 
 #pragma mark 
@@ -415,7 +425,7 @@ static const int kMaxLinesOfScrollback = 100;
 		newOut = [newLines componentsJoinedByString:@"\n"];
 	}
 	out.text = newOut;
-	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
+	[self scrollToBottom];
 }
 -(IBAction)showSettings:(UIButton*)sender;
 {
@@ -491,7 +501,7 @@ static const int kMaxLinesOfScrollback = 100;
 }
 - (void)keyboardDidShow:(NSNotification*)notif;
 {
-	[out scrollRangeToVisible:NSMakeRange(out.text.length-1, 1)];
+	[self scrollToBottom];
 }
 
 

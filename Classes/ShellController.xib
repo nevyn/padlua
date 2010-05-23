@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="12"/>
+			<integer value="2"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -50,7 +50,7 @@
 							<object class="IBUITextView" id="437117758">
 								<reference key="NSNextResponder" ref="800695819"/>
 								<int key="NSvFlags">266</int>
-								<string key="NSFrame">{{0, 748}, {768, 256}}</string>
+								<string key="NSFrame">{{0, 870}, {768, 134}}</string>
 								<reference key="NSSuperview" ref="800695819"/>
 								<object class="NSColor" key="IBUIBackgroundColor" id="548508794">
 									<int key="NSColorSpace">1</int>
@@ -82,7 +82,7 @@
 									<object class="IBUITextView" id="625014222">
 										<reference key="NSNextResponder" ref="628732235"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrameSize">{383, 747}</string>
+										<string key="NSFrameSize">{383, 869}</string>
 										<reference key="NSSuperview" ref="628732235"/>
 										<reference key="IBUIBackgroundColor" ref="548508794"/>
 										<bool key="IBUIClipsSubviews">YES</bool>
@@ -103,7 +103,7 @@
 									<object class="IBUIView" id="481420021">
 										<reference key="NSNextResponder" ref="628732235"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrame">{{384, 0}, {384, 747}}</string>
+										<string key="NSFrame">{{384, 0}, {384, 869}}</string>
 										<reference key="NSSuperview" ref="628732235"/>
 										<object class="NSColor" key="IBUIBackgroundColor">
 											<int key="NSColorSpace">3</int>
@@ -115,7 +115,7 @@
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 									</object>
 								</object>
-								<string key="NSFrameSize">{768, 747}</string>
+								<string key="NSFrameSize">{768, 869}</string>
 								<reference key="NSSuperview" ref="800695819"/>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">1</int>
@@ -320,7 +320,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>LuaCanvas2D</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{80, 53}, {783, 803}}</string>
+					<string>{{80, 54}, {783, 802}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

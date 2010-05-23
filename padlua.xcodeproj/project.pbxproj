@@ -256,8 +256,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				05D8626F1195C479004BA8F5 /* lua */,
 				32CA4F630368D1EE00C91783 /* padlua_Prefix.pch */,
+				05D8626F1195C479004BA8F5 /* lua */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";

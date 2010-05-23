@@ -86,6 +86,7 @@ static LuaCanvas2D *singleton = nil;
 -(void)load;
 {
 	self.image = [UIImage imageWithContentsOfFile:self.dumpPath];
+  CGContextDrawImage(ctx, (CGRect){.size=self.image.size}, self.image.CGImage);
 }
 -(void)save;
 {
@@ -130,7 +131,7 @@ static LuaCanvas2D *singleton = nil;
 	if(animated)
 		[UIView commitAnimations];
 		
-	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canvas2d.shown"];
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canvas.shown"];
 }
 
 -(void)hide:(BOOL)animated;
@@ -159,7 +160,7 @@ static LuaCanvas2D *singleton = nil;
 	if(animated)
 		[UIView commitAnimations];
 	
-	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canvas2d.shown"];
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canvas.shown"];
 }
 @end
 
@@ -235,7 +236,7 @@ static int hide(lua_State *L)
 static int clear(lua_State *L)
 {
 	if(lua_gettop(L) != 1) {
-		lua_pushstring(L, "usage: canvas2d.clear(color)\n");
+		lua_pushstring(L, "usage: canvas.clear(color)\n");
 		return 1;
 	}
 	[singleton willRedraw];
@@ -255,31 +256,40 @@ static int clear(lua_State *L)
 // move(vector{x,y})
 static int move(lua_State *L)
 {
-	if(lua_gettop(L) != 1) {
-		lua_pushstring(L, "usage: canvas2d.move(vector{x,y})\n"
+
+	CGPoint p;
+  if(lua_gettop(L) == 1)
+		p = pointFromLuaVector(L, lua_gettop(L));
+  else if(lua_gettop(L) == 2) {
+  	p.x = lua_tonumber(L, -2);
+    p.y = lua_tonumber(L, -1);
+  } else {
+		lua_pushstring(L, "usage: canvas.move(vector{x,y})\n"
 			"\tMoves the pen to the given point without drawing anything\n");
 		return 1;
 	}
-	
-	CGPoint p = pointFromLuaVector(L, lua_gettop(L));
-	lua_pop(L, 1);
+	lua_pop(L, lua_gettop(L));
 	CGContextMoveToPoint(singleton->ctx, p.x, p.y);
 	
 	return 0;
 }
 
-// addLine(vector{x,y})
-static int addLine(lua_State *L)
+// lineTo(vector{x,y})
+static int lineTo(lua_State *L)
 {
-	if(lua_gettop(L) != 1) {
-		lua_pushstring(L, "usage: canvas2d.addLine(vector{x,y})\n"
+	CGPoint p;
+  if(lua_gettop(L) == 1)
+		p = pointFromLuaVector(L, lua_gettop(L));
+  else if(lua_gettop(L) == 2) {
+  	p.x = lua_tonumber(L, -2);
+    p.y = lua_tonumber(L, -1);
+  } else {
+      lua_pushstring(L, "usage: canvas.lineTo(vector{x,y})\n"
 			"\tMoves the pen to the given point, and adds a straight line to the current\n"
 			"\t path on the way there.\n");
 		return 1;
-	}
-	
-	CGPoint p = pointFromLuaVector(L, lua_gettop(L));
-	lua_pop(L, 1);
+  }
+	lua_pop(L, lua_gettop(L));
 	CGContextAddLineToPoint(singleton->ctx, p.x, p.y);
 	
 	return 0;
@@ -373,7 +383,7 @@ static int getSetLineWidth(lua_State *L)
 static int stroke(lua_State *L)
 {
 	if(lua_gettop(L) != 0) {
-		lua_pushstring(L, "usage: canvas2d.stroke()\n"
+		lua_pushstring(L, "usage: canvas.stroke()\n"
 			"\tStrokes the current path with the current color.\n"
 		);
 		return 1;
@@ -388,7 +398,7 @@ static int stroke(lua_State *L)
 static int fill(lua_State *L)
 {
 	if(lua_gettop(L) != 0) {
-		lua_pushstring(L, "usage: canvas2d.fill()\n"
+		lua_pushstring(L, "usage: canvas.fill()\n"
 			"\tFills the current path with the current color.\n"
 		);
 		return 1;
@@ -409,7 +419,7 @@ static const luaL_Reg canvasMethods[] = {
 	"show", show,
 	"hide", hide,
 	"move", move,
-	"addLine", addLine,
+	"lineTo", lineTo,
 	"strokeColor", getSetStrokeColor,
 	"fillColor", getSetFillColor,
 	"color", getSetColor,
@@ -424,7 +434,7 @@ static const luaL_Reg canvasMethods[] = {
 
 +(void)publishModuleInState:(lua_State*)state;
 {
-	luaL_register(state, "canvas2d", canvasMethods);
+	luaL_register(state, "canvas", canvasMethods);
 }
 
 @end
