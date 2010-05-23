@@ -9,6 +9,8 @@
 #import "ShellController.h"
 #import "EditorController.h"
 #import "LuaOS.h"
+#import "TCKeyboardButton.h"
+#import "TCGradientView.h"
 
 @interface ShellController ()
 @property (retain) NSString *savedCommand;
@@ -75,22 +77,33 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 		@"↓", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", nil
 	];
 	NSArray *rows = [NSArray arrayWithObjects:row0, row1, row2, nil];
-	
+	static const float buttonHeight = 64;
 	CGRect scr = [UIScreen mainScreen].bounds;
-	UIView *keyboardAccessory = [[[UIView alloc] initWithFrame:CGRectMake(
-		0, 0, scr.size.width, rows.count*51 + 1
+	TCGradientView *keyboardAccessory = [[[TCGradientView alloc] initWithFrame:CGRectMake(
+		0, 0, scr.size.width, rows.count*buttonHeight + 3
 	)] autorelease];
+  keyboardAccessory.colors = [NSArray arrayWithObjects:
+  	[UIColor colorWithRed:.712 green:.708 blue:.751 alpha:1],
+    [UIColor colorWithRed:.439 green:.443 blue:.471 alpha:1],
+    nil
+  ];
+  UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, scr.size.width, 1)];
+  line1.backgroundColor = [UIColor blackColor];
+  UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(0, 1, scr.size.width, 1)];
+  line2.backgroundColor = [UIColor colorWithWhite:0.749 alpha:1];
+  [keyboardAccessory addSubview:line1]; [keyboardAccessory addSubview:line2];
+  
 	
 	
-	CGRect pen = CGRectMake(0, -50, 0, 50);
+	CGRect pen = CGRectMake(4, -buttonHeight, 0, buttonHeight);
 	for(int i = 0; i < [rows count]; i++) {
 		NSArray *row = [rows objectAtIndex:i];
-		pen.origin.y += pen.size.height + 1;
+		pen.origin.y += pen.size.height;
 		pen.origin.x = 0;
-		pen.size.width = scr.size.width/[row count] - 1;
+		pen.size.width = ceil((scr.size.width-5)/[row count]);
 		for(int j = 0; j < [row count]; j++) {
 			NSString *title = [row objectAtIndex:j];
-			UIButton *button = [[UIButton alloc] initWithFrame:pen];
+			TCKeyboardButton *button = [[TCKeyboardButton alloc] initWithFrame:pen];
 			if([title isEqual:@"Run"])
 				[button addTarget:self action:@selector(runCurrent:) forControlEvents:UIControlEventTouchUpInside];
 			else if([title isEqual:@"↑"])
@@ -104,15 +117,12 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 			else
 				[button addTarget:self action:@selector(insertCharacter:) forControlEvents:UIControlEventTouchUpInside];
 			[button setTitleColor:[UIColor blackColor] forState:0];
-			[button setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
 			if(title.length > 1 || [title characterAtIndex:0] > 255)
-				button.backgroundColor = [UIColor colorWithRed:.8 green:.92 blue:.8 alpha:1.];
-			else
-				button.backgroundColor = [UIColor whiteColor];
+				button.tint = [UIColor colorWithRed:.85 green:.85 blue:.95 alpha:1];
 			[button setTitle:title forState:0];
 			
 			[keyboardAccessory addSubview:button];
-			pen.origin.x += pen.size.width + 1;
+			pen.origin.x += pen.size.width;
 		}
 	}
 	

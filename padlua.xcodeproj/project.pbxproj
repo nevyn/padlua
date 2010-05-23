@@ -53,6 +53,9 @@
 		05FCAC3711A991F10048352B /* EditorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAC3511A991F10048352B /* EditorController.m */; };
 		05FCAC3811A991F10048352B /* EditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05FCAC3611A991F10048352B /* EditorController.xib */; };
 		05FCAD1911A9BEEE0048352B /* LuaOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAD1811A9BEEE0048352B /* LuaOS.m */; };
+		05FCAD2B11A9CB710048352B /* TCKeyboardButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAD2A11A9CB710048352B /* TCKeyboardButton.m */; };
+		05FCAD8511A9D3940048352B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05FCAD8411A9D3940048352B /* QuartzCore.framework */; };
+		05FCAD8811A9D39B0048352B /* TCGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAD8711A9D39B0048352B /* TCGradientView.m */; };
 		1D3623260D0F684500981E51 /* padluaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* padluaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -136,6 +139,11 @@
 		05FCAC3611A991F10048352B /* EditorController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditorController.xib; sourceTree = "<group>"; };
 		05FCAD1711A9BEEE0048352B /* LuaOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LuaOS.h; sourceTree = "<group>"; };
 		05FCAD1811A9BEEE0048352B /* LuaOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LuaOS.m; sourceTree = "<group>"; };
+		05FCAD2911A9CB710048352B /* TCKeyboardButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCKeyboardButton.h; sourceTree = "<group>"; };
+		05FCAD2A11A9CB710048352B /* TCKeyboardButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCKeyboardButton.m; sourceTree = "<group>"; };
+		05FCAD8411A9D3940048352B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		05FCAD8611A9D39B0048352B /* TCGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCGradientView.h; sourceTree = "<group>"; };
+		05FCAD8711A9D39B0048352B /* TCGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCGradientView.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* padluaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = padluaAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* padluaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = padluaAppDelegate.m; sourceTree = "<group>"; };
@@ -156,6 +164,7 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
+				05FCAD8511A9D3940048352B /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,6 +251,10 @@
 				05FCAC3611A991F10048352B /* EditorController.xib */,
 				05FCAD1711A9BEEE0048352B /* LuaOS.h */,
 				05FCAD1811A9BEEE0048352B /* LuaOS.m */,
+				05FCAD2911A9CB710048352B /* TCKeyboardButton.h */,
+				05FCAD2A11A9CB710048352B /* TCKeyboardButton.m */,
+				05FCAD8611A9D39B0048352B /* TCGradientView.h */,
+				05FCAD8711A9D39B0048352B /* TCGradientView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -297,6 +310,7 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
+				05FCAD8411A9D3940048352B /* QuartzCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -420,6 +434,8 @@
 				05D869FA11975731004BA8F5 /* LuaCanvas2D.m in Sources */,
 				05FCAC3711A991F10048352B /* EditorController.m in Sources */,
 				05FCAD1911A9BEEE0048352B /* LuaOS.m in Sources */,
+				05FCAD2B11A9CB710048352B /* TCKeyboardButton.m in Sources */,
+				05FCAD8811A9D39B0048352B /* TCGradientView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
