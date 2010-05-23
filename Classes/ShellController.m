@@ -8,6 +8,7 @@
 
 #import "ShellController.h"
 #import "EditorController.h"
+#import "LuaOS.h"
 
 @interface ShellController ()
 @property (retain) NSString *savedCommand;
@@ -137,6 +138,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	luaL_openlibs(L);
 	[LuaCanvas2D publishModuleInState:L];
   [EditorController publishModuleInState:L];
+  [LuaOS publishModuleInState:L];
 }
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 {

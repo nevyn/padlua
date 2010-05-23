@@ -101,7 +101,7 @@ static int edit(lua_State *L)
 	return 0;
 }
 
-static const luaL_Reg canvasMethods[] = {
+static const luaL_Reg editorMethods[] = {
 	"edit", edit,
 	
 	NULL, NULL
@@ -111,7 +111,7 @@ static const luaL_Reg canvasMethods[] = {
 
 +(void)publishModuleInState:(lua_State*)state;
 {
-	luaL_register(state, "editor", canvasMethods);
+	luaL_register(state, "editor", editorMethods);
 }
 
 @end
