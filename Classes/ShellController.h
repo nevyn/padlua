@@ -40,6 +40,7 @@
 -(IBAction)newerCommand:(id)sender;
 -(IBAction)showSettings:(UIButton*)sender;
 
+-(void)runCommand:(NSString*)command saveToHistory:(BOOL)save;
 -(void)output:(NSString*)output;
 
 @end

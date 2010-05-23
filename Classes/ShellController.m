@@ -65,7 +65,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 -(UIView*)keyboardAccessory;
 {
 	NSArray *row0 = [NSArray arrayWithObjects:
-  	@"Run", @"Help", @"Add…", @"{", @"}", @"(", @")", @"[", @"]", nil
+  	@"Run", @"Help", @"Add", @"{", @"}", @"(", @")", @"[", @"]", @"<", @">", nil
   ];
 	NSArray *row1 = [NSArray arrayWithObjects:
 		@"↑", @"-", @"+", @"*", @"=", @"/", @"|", @"\\", @"\"", @";", @":", nil
@@ -353,15 +353,22 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 }
 -(IBAction)runCurrent:(UIButton*)sender;
 {
-	[self output:[NSString stringWithFormat:@"> %@\n", in.text]];
-	[commandHistory insertObject:in.text atIndex:0];
-	if([commandHistory count] > 50)
-		[commandHistory removeLastObject];
-	commandIndex = -1;
+	[self runCommand:in.text saveToHistory:YES];
+	in.text = @"";
+}
+-(void)runCommand:(NSString*)command saveToHistory:(BOOL)save;
+{
+	if(save) {
+	  [self output:[NSString stringWithFormat:@"> %@\n", command]];
+		[commandHistory insertObject:command atIndex:0];
+		if([commandHistory count] > 50)
+			[commandHistory removeLastObject];
+		commandIndex = -1;
+  }
 	
 	const int stacktop = lua_gettop(L);
 	
-	NSString *withReturnPrefix = [@"return " stringByAppendingString:in.text];
+	NSString *withReturnPrefix = [@"return " stringByAppendingString:command];
 	
 	BOOL successfulParse = luaL_loadstring(L, [withReturnPrefix UTF8String]) == 0;
 	if(!successfulParse) {
@@ -389,9 +396,8 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	}
 	
 	lua_pop(L, lua_gettop(L)-stacktop);
-	
-	in.text = @"";
 }
+
 -(IBAction)olderCommand:(id)sender;
 {
 	int newIndex = commandIndex + 1;

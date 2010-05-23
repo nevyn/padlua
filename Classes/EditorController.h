@@ -15,12 +15,14 @@
 	id _modalParent;
   UITextView *editor;
   UILabel *titleLabel;
+  NSURL *path;
 }
 @property (retain) IBOutlet UITextView *editor;
 @property (retain) IBOutlet UILabel *titleLabel;
 +(id)pushEditorForFile:(NSString*)path on:(UIViewController*)modalParent;
 
 -(IBAction)done:(id)sender;
+-(IBAction)runAndClose:(id)sender;
 @end
 
 @interface EditorController (LuaExtensions)
