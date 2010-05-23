@@ -56,6 +56,8 @@
 		05FCAD2B11A9CB710048352B /* TCKeyboardButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAD2A11A9CB710048352B /* TCKeyboardButton.m */; };
 		05FCAD8511A9D3940048352B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05FCAD8411A9D3940048352B /* QuartzCore.framework */; };
 		05FCAD8811A9D39B0048352B /* TCGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAD8711A9D39B0048352B /* TCGradientView.m */; };
+		05FCAE7A11A9E10D0048352B /* click_off.wav in Resources */ = {isa = PBXBuildFile; fileRef = 05FCAE7911A9E10D0048352B /* click_off.wav */; };
+		05FCAE9011A9E14E0048352B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05FCAE8F11A9E14E0048352B /* AudioToolbox.framework */; };
 		1D3623260D0F684500981E51 /* padluaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* padluaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -144,6 +146,8 @@
 		05FCAD8411A9D3940048352B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		05FCAD8611A9D39B0048352B /* TCGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCGradientView.h; sourceTree = "<group>"; };
 		05FCAD8711A9D39B0048352B /* TCGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCGradientView.m; sourceTree = "<group>"; };
+		05FCAE7911A9E10D0048352B /* click_off.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = click_off.wav; sourceTree = "<group>"; };
+		05FCAE8F11A9E14E0048352B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* padluaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = padluaAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* padluaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = padluaAppDelegate.m; sourceTree = "<group>"; };
@@ -165,6 +169,7 @@
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				05FCAD8511A9D3940048352B /* QuartzCore.framework in Frameworks */,
+				05FCAE9011A9E14E0048352B /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +305,7 @@
 				05D86ACE119A7EFE004BA8F5 /* index.html */,
 				05D86AF5119A7FC1004BA8F5 /* cover.png */,
 				05D86AEF119A7F87004BA8F5 /* logo.gif */,
+				05FCAE7911A9E10D0048352B /* click_off.wav */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -311,6 +317,7 @@
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				05FCAD8411A9D3940048352B /* QuartzCore.framework */,
+				05FCAE8F11A9E14E0048352B /* AudioToolbox.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -368,6 +375,7 @@
 				05D86AF6119A7FC1004BA8F5 /* cover.png in Resources */,
 				05B6B9E5119C4CE500B21E9B /* Default.png in Resources */,
 				05FCAC3811A991F10048352B /* EditorController.xib in Resources */,
+				05FCAE7A11A9E10D0048352B /* click_off.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,6 +8,8 @@
 
 #import "TCKeyboardButton.h"
 
+static SystemSoundID clickSound = 0;
+
 static void TCCGContextAddRoundRect(CGContextRef context, CGRect rect, float ovalWidth,float ovalHeight) 
 { 
   if (ovalWidth == 0 || ovalHeight == 0) { 
@@ -32,6 +34,10 @@ static void TCCGContextAddRoundRect(CGContextRef context, CGRect rect, float ova
 
 
 @implementation TCKeyboardButton
++(void)initialize;
+{
+	AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle]pathForResource:@"click_off" ofType:@"wav"]isDirectory:NO],&clickSound);
+}
 @synthesize tint;
 -(void)setTint:(UIColor *)tint_;
 {
@@ -46,6 +52,7 @@ static void TCCGContextAddRoundRect(CGContextRef context, CGRect rect, float ova
   
   self.titleLabel.font = [UIFont systemFontOfSize:22];
   self.tint = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+  
   
 	return self;
 }
@@ -100,5 +107,11 @@ static void TCCGContextAddRoundRect(CGContextRef context, CGRect rect, float ova
   TCCGContextAddRoundRect(ctx, stroke, 6, 6);
   CGContextStrokePath(ctx);
 
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+{
+ 	AudioServicesPlaySystemSound(clickSound);
+	[super touchesBegan:touches withEvent:event];
 }
 @end
