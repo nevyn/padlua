@@ -50,6 +50,8 @@
 		05D86AE3119A7F4A004BA8F5 /* manual.html in Resources */ = {isa = PBXBuildFile; fileRef = 05D86AE2119A7F4A004BA8F5 /* manual.html */; };
 		05D86AF0119A7F87004BA8F5 /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = 05D86AEF119A7F87004BA8F5 /* logo.gif */; };
 		05D86AF6119A7FC1004BA8F5 /* cover.png in Resources */ = {isa = PBXBuildFile; fileRef = 05D86AF5119A7FC1004BA8F5 /* cover.png */; };
+		05FCAC3711A991F10048352B /* EditorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FCAC3511A991F10048352B /* EditorController.m */; };
+		05FCAC3811A991F10048352B /* EditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05FCAC3611A991F10048352B /* EditorController.xib */; };
 		1D3623260D0F684500981E51 /* padluaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* padluaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -128,6 +130,9 @@
 		05D86AE2119A7F4A004BA8F5 /* manual.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = manual.html; sourceTree = "<group>"; };
 		05D86AEF119A7F87004BA8F5 /* logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = logo.gif; sourceTree = "<group>"; };
 		05D86AF5119A7FC1004BA8F5 /* cover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cover.png; sourceTree = "<group>"; };
+		05FCAC3411A991F10048352B /* EditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorController.h; sourceTree = "<group>"; };
+		05FCAC3511A991F10048352B /* EditorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditorController.m; sourceTree = "<group>"; };
+		05FCAC3611A991F10048352B /* EditorController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditorController.xib; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* padluaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = padluaAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* padluaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = padluaAppDelegate.m; sourceTree = "<group>"; };
@@ -229,6 +234,9 @@
 				05D8670411970C52004BA8F5 /* SettingsController.xib */,
 				05D869F811975731004BA8F5 /* LuaCanvas2D.h */,
 				05D869F911975731004BA8F5 /* LuaCanvas2D.m */,
+				05FCAC3411A991F10048352B /* EditorController.h */,
+				05FCAC3511A991F10048352B /* EditorController.m */,
+				05FCAC3611A991F10048352B /* EditorController.xib */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -340,6 +348,7 @@
 				05D86AF0119A7F87004BA8F5 /* logo.gif in Resources */,
 				05D86AF6119A7FC1004BA8F5 /* cover.png in Resources */,
 				05B6B9E5119C4CE500B21E9B /* Default.png in Resources */,
+				05FCAC3811A991F10048352B /* EditorController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +413,7 @@
 				05D865C71196D197004BA8F5 /* ShellController.m in Sources */,
 				05D8670511970C53004BA8F5 /* SettingsController.m in Sources */,
 				05D869FA11975731004BA8F5 /* LuaCanvas2D.m in Sources */,
+				05FCAC3711A991F10048352B /* EditorController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

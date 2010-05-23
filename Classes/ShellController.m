@@ -7,6 +7,7 @@
 //
 
 #import "ShellController.h"
+#import "EditorController.h"
 
 @interface ShellController ()
 @property (retain) NSString *savedCommand;
@@ -53,7 +54,10 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 
 @implementation ShellController
 @synthesize savedCommand;
-
++(id)shellController;
+{
+	return singleton;
+}
 #pragma mark 
 #pragma mark Init/teardown
 #pragma mark -
@@ -132,6 +136,7 @@ const char * LuaNSDataReader(lua_State *L, void *ud, size_t *sz)
 	G(L)->printfunc = printfunc;
 	luaL_openlibs(L);
 	[LuaCanvas2D publishModuleInState:L];
+  [EditorController publishModuleInState:L];
 }
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 {

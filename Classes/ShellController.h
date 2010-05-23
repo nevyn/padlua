@@ -33,6 +33,7 @@
 	
 	UINavigationController *helpController;
 }
++(id)shellController;
 -(IBAction)insertCharacter:(UIButton*)sender;
 -(IBAction)runCurrent:(UIButton*)sender;
 -(IBAction)olderCommand:(id)sender;
